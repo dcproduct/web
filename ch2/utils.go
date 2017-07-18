@@ -22,6 +22,7 @@ type Configuration struct {
 
 var config Configuration
 var logger *log.Logger
+var dlogger *log.Logger
 
 // Convenience function for printing to stdout
 func p(a ...interface{}) {
@@ -35,7 +36,8 @@ func init() {
 		log.Fatalln("Failed to open log file", err)
 	}
 
-	logger = log.New(file, "INFO", log.Ldate|log.Ltime|log.Lshortfile)
+	logger = log.New(file, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
+	dlogger = log.New(os.Stdout, "DEBUG ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func loadConfig() {
@@ -60,7 +62,9 @@ func error_message(writer http.ResponseWriter, request *http.Request, msg string
 //Checks if the user is logged in and has a session, if not err is not nil
 func session(writer http.ResponseWriter, request *http.Request) (sess data.Session, err error) {
 	cookie, err := request.Cookie("_cookie")
+
 	if err == nil {
+		debug("cookie value is :", cookie.Value)
 		sess = data.Session{Uuid: cookie.Value}
 		if ok, _ := sess.Check(); !ok {
 			err = errors.New("Invalid session")
@@ -92,18 +96,22 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 
 // for logging
 func info(args ...interface{}) {
-	logger.SetPrefix("INFO")
+	logger.SetPrefix("INFO ")
 	logger.Println(args...)
 }
 
 func danger(args ...interface{}) {
-	logger.SetPrefix("ERROR")
+	logger.SetPrefix("ERROR ")
 	logger.Println(args...)
 }
 
 func warning(args ...interface{}) {
-	logger.SetPrefix("WARNING")
+	logger.SetPrefix("WARNING ")
 	logger.Println(args...)
+}
+
+func debug(args ...interface{}) {
+	dlogger.Println(args)
 }
 
 func version() string {

@@ -11,9 +11,12 @@ import (
 // Show the new thread form page
 func newThread(writer http.ResponseWriter, request *http.Request) {
 	_, err := session(writer, request)
+	info("[after lookup session]", err)
 	if err != nil {
+		info("[redirect to login]", err)
 		http.Redirect(writer, request, "/login", 302)
 	} else {
+		info("[generateHTML]", err)
 		generateHTML(writer, nil, "layout", "private.navbar", "new.thread")
 	}
 }

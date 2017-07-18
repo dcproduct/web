@@ -1,6 +1,6 @@
 {
-    "Addres"        : "0.0.0.0:8080",
-    "ReadTimout"    : 10,
+    "Address"        : "0.0.0.0:8080",
+    "ReadTimeout"    : 10,
     "WriteTimeout"  : 600,
-    "Static"        : "pubilc"
+    "Static"        : "public"
 }
